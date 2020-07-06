@@ -1,0 +1,24 @@
+{
+  "name": "project",
+  "version": "1.0.0",
+  "main": "app.js",
+  "dependencies": {
+    "express": "^4.17.1",
+    "socket.io": "^1.7.4"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Lua00808/jsgame.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Lua00808/jsgame/issues"
+  },
+  "homepage": "https://github.com/Lua00808/jsgame#readme",
+  "description": ""
+}
