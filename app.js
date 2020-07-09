@@ -19,35 +19,64 @@ var Player = function(id) {
         x:250,
         y:250,
         id:id,
-        number:"" + Math.floor(10*Math.random())
+        number:"" + Math.floor(10*Math.random()),
+        pressingRight:false,
+        pressingLeft:false,
+        pressingUp:false,
+        pressingDown:false,
+        maxSpd:10,
+    }
+    self.updatePosition = function() {
+        if(self.pressingLeft) {
+            self.x -= self.maxSpd;
+        }
+        if(self.pressingRight) {
+            self.x += self.maxSpd;
+        }
+        if(self.pressingUp) {
+            self.y -= self.maxSpd;
+        }
+        if(self.pressingDown) {
+            self.y += self.maxSpd;
+        }
     }
     return  self;
 }
 
 var io = require('socket.io')(serv,{});
 io.sockets.on('connection', function(socket) {
-    socket.id = Math.random();
+    socket.id = Math.random();              // ランダム id を生成
     SOCKET_LIST[socket.id] = socket;
 
     var player = Player(socket.id);
     PLAYER_LIST[socket.id] = player;
 
-    socket.on('disconnect', function() {
+    socket.on('disconnect', function() {    // 接続が切れたら削除
         delete SOCKET_LIST[socket.id];
         delete PLAYER_LIST[socket.id];
+    });
+    socket.on('keyPress', function(data) {
+        if(data.inputId === 'left') {
+            player.pressingLeft = data.state;
+        } else if(data.inputId === 'right') {
+            player.pressingRight = data.state;          //6:00~
+        } else if(data.inputId === 'up') {
+            player.pressingUp = data.state;
+        } else if(data.inputId === 'down') {
+            player.pressingDown = data.state;
+        }
     });
 });
 
 setInterval(function() {
-    var pack = [];                  // ゲーム内のプレイヤーに関する情報
-    for(var i in SOCKET_LIST) {
-        var socket = SOCKET_LIST[i];
-        socket.x++;
-        socket.y++;
+    var pack = [];
+    for(var i in PLAYER_LIST) {
+        var player = PLAYER_LIST[i];
+        player.updatePosition();
         pack.push({
-            x:socket.x,
-            y:socket.y,
-            number:socket.number
+            x:player.x,
+            y:player.y,
+            number:player.number
         });
     }
     for (var i in SOCKET_LIST){
