@@ -14,30 +14,41 @@ console.log("Server started.");
 var SOCKET_LIST = {};
 var PLAYER_LIST = {};
 
-var Player = function(id) {
+var Entity = function() {
     var self = {
         x:250,
         y:250,
-        id:id,
-        number:"" + Math.floor(10*Math.random()),
-        pressingRight:false,
-        pressingLeft:false,
-        pressingUp:false,
-        pressingDown:false,
-        maxSpd:10,
+        spdX:0,
+        spdY:0,
+        id:"",
+    }
+    self.update = function() {
+        self.updatePosition();
     }
     self.updatePosition = function() {
-        if(self.pressingLeft) {
-            self.x -= self.maxSpd;
-        }
+        self.x += self.spdX;
+        self.y += self.spdY;
+    }
+    return self;
+}
+
+var Player = function(id) {
+    var self = Entity();
+    self.id = id;
+    self.number = "" + Math.floor(10 * Math.random());
+    self.pressingLeft = false;
+    self.pressingRight = false;
+    self.pressingUp = false;
+    self.pressingDown = false;
+    self.maxSpd = 10;
+
+    self.updateSpd = function() {
         if(self.pressingRight) {
-            self.x += self.maxSpd;
-        }
-        if(self.pressingUp) {
-            self.y -= self.maxSpd;
-        }
-        if(self.pressingDown) {
-            self.y += self.maxSpd;
+            self.spdX = self.maxSpd;
+        } else if(self.pressingLeft) {
+            self.spdX = -self.maxSpd;
+        } else {
+            self.spdX = 0;
         }
     }
     return  self;
