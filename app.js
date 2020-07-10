@@ -59,7 +59,7 @@ io.sockets.on('connection', function(socket) {
         if(data.inputId === 'left') {
             player.pressingLeft = data.state;
         } else if(data.inputId === 'right') {
-            player.pressingRight = data.state;          //6:00~
+            player.pressingRight = data.state;
         } else if(data.inputId === 'up') {
             player.pressingUp = data.state;
         } else if(data.inputId === 'down') {
