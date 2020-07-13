@@ -136,21 +136,26 @@ Bullet.update = function() {
 
 var io = require('socket.io')(serv,{});
 io.sockets.on('connection', function(socket) {
-    socket.id = Math.random();              // ランダム id を生成
+    socket.id = Math.random();
     SOCKET_LIST[socket.id] = socket;
 
     Player.onConnect(socket);
 
-    socket.on('disconnect', function() {    // 接続が切れたら削除
+    socket.on('disconnect', function() {
         delete SOCKET_LIST[socket.id];
         Player.onDisconnect(socket);
     });
-    socket.on('sendMsgToServer', function(data) {    // 接続が切れたら削除
+    socket.on('sendMsgToServer', function(data) {
         var playerName = ("" + socket.id).slice(2,7);
         for(var i in SOCKET_LIST) {
             SOCKET_LIST[i].emit('addToChat',playerName + ': ' + data);
         }
     });
+    socket.on('evalServer', function(data) {
+        var res = eval(data);
+        socket.emit('evalAnswer',res);
+    });
+    //10:00
 });
 
 setInterval(function() {
