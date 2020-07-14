@@ -39,12 +39,24 @@ var Player = function(id) {
     self.pressingRight = false;
     self.pressingUp = false;
     self.pressingDown = false;
+    self.pressingAttack = false;
+    self.mouseAngle = 0;
     self.maxSpd = 10;
 
     var super_update = self.update;
     self.update = function() {
         self.updateSpd();
         super_update();
+
+        if(self.pressingAttack) {
+            self.shootBullet(self.pressingAttack);
+        }
+        // 4:00
+    }
+    self.shootBullet = function(angle) {
+        var b = Bullet(angle);
+        b.x = self.x;
+        b.y = self.y;
     }
 
     self.updateSpd = function() {
@@ -78,6 +90,10 @@ Player.onConnect = function(socket) {
             player.pressingUp = data.state;
         } else if(data.inputId === 'down') {
             player.pressingDown = data.state;
+        } else if(data.inputId === 'attack') {
+            player.pressingAttack = data.state;
+        } else if(data.inputId === 'mouseAngle') {
+            player.mouseAngle = data.state;
         }
     });
 }
@@ -117,11 +133,8 @@ var Bullet = function(angle) {
     return self;
 }
 Bullet.list = {};
-Bullet.update = function() {
-    if(Math.random() < 0.1) {
-        Bullet(Math.random()*360);
-    }
 
+Bullet.update = function() {
     var pack = [];
     for(var i in Bullet.list) {
         var bullet = Bullet.list[i];
@@ -133,6 +146,8 @@ Bullet.update = function() {
     }
     return pack;
 }
+
+var DEBUG = true;
 
 var io = require('socket.io')(serv,{});
 io.sockets.on('connection', function(socket) {
@@ -152,10 +167,12 @@ io.sockets.on('connection', function(socket) {
         }
     });
     socket.on('evalServer', function(data) {
+        if(!DEBUG) {
+            return;
+        }
         var res = eval(data);
         socket.emit('evalAnswer',res);
     });
-    //10:00
 });
 
 setInterval(function() {
