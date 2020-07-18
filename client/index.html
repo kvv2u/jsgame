@@ -25,7 +25,7 @@
   var signDiv = document.getElementById('signDiv');
   var signDivUsername = document.getElementById('signDiv-username');
   var signDivSignIn = document.getElementById('signDiv-signIn');
-  var signDivSignUp = document.getElementById('signDiv-signup');
+  var signDivSignUp = document.getElementById('signDiv-signUp');
   var signDivPassword = document.getElementById('signDiv-password');
 
   signDivSignIn.onclick = function() {
@@ -41,7 +41,8 @@
     } else {
       alert("Sign in unsuccessful.");
     }
-    socket.on('signUpResponse',function(data) {
+  });
+  socket.on('signUpResponse',function(data) {
     if(data.success) {
       alert("Sign up successful.");
     } else {
