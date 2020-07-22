@@ -118,9 +118,9 @@ Player.update = function() {
         var player = Player.list[i];
         player.update();
         pack.push({
+            id:player.id,
             x:player.x,
             y:player.y,
-            number:player.number
         });
     }
     return pack;
@@ -163,6 +163,7 @@ Bullet.update = function() {
             delete Bullet.list[i];
         } else {
             pack.push({
+                id:bullet.id,
                 x:bullet.x,
                 y:bullet.y,
             });
@@ -170,6 +171,8 @@ Bullet.update = function() {
     }
     return pack;
 }
+var initPack = {player:[],bullet:[]};
+var removePack = {player:[],bullet:[]};
 
 var DEBUG = true;
 
@@ -257,6 +260,6 @@ setInterval(function() {
     }
     for (var i in SOCKET_LIST){
         var socket = SOCKET_LIST[i];
-        socket.emit('newPositions',pack); 
+        socket.emit('update',pack); 
     }
 },1000/25);
