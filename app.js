@@ -93,7 +93,7 @@ var Player = function(id) {
         id:self.id,
         x:self.x,
         y:self.y,
-        number:self.y,
+        number:self.number,
     });
     return  self;
 }
@@ -158,6 +158,7 @@ var Bullet = function(parent,angle) {
         }
     }
     Bullet.list[self.id] = self;
+
     initPack.bullet.push({
         id:self.id,
         x:self.x,
@@ -273,7 +274,7 @@ setInterval(function() {
         player:Player.update(),
         bullet:Bullet.update(),
     }
-    for (var i in SOCKET_LIST){
+    for(var i in SOCKET_LIST){
         var socket = SOCKET_LIST[i];
         socket.emit('init',initPack);
         socket.emit('update',pack); 
