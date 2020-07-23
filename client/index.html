@@ -50,8 +50,6 @@
     }
   });
 
-
-
   // chat
   var chatText = document.getElementById('chat-text');
   var chatInput = document.getElementById('chat-input');
@@ -101,17 +99,17 @@
 
   socket.on('init',function(data) {
     // { Player : [{id:123,number:'1',x:0,y:0},{id:1,number:'2',x:0,y:0}], bullet: [] }
-    for(let i = 0; i < data.player.length; i++) {
+    for(var i = 0; i < data.player.length; i++) {
       new Player(data.player[i]);
     }
-    for(let i = 0; i < data.bullet.length; i++) {
+    for(var i = 0; i < data.bullet.length; i++) {
       new Bullet(data.bullet[i]);
     }
   });
 
   socket.on('update',function(data) {
     // { Player : [{id:123,x:0,y:0},{id:1,x:0,y:0}], bullet: [] }
-    for(let i = 0; i < data.player.length; i++) {
+    for(var i = 0; i < data.player.length; i++) {
       var pack = data.player[i];
       var p = Player.list[pack.id];
       if(p) {
@@ -125,7 +123,7 @@
     }
     for(var i = 0; i < data.bullet.length; i++) {
       var pack = data.bullet[i];
-      var b = Bullet.list[data.bullet[i].id];
+      var b = Bullet.list[pack.id];
       if(b) {
         if(pack.x !== undefined) {
           b.x = pack.x;
@@ -139,10 +137,10 @@
 
   socket.on('remove',function(data) {
     // {player:[12323],bullet:[12323,123123]}
-    for(let i = 0; i < data.player.length; i++) {
+    for(var i = 0; i < data.player.length; i++) {
       delete Player.list[data.player[i]];
     }
-    for(let i = 0; i < data.bullet.length; i++) {
+    for(var i = 0; i < data.bullet.length; i++) {
       delete Bullet.list[data.bullet[i]];
     }
   });
@@ -153,7 +151,7 @@
       ctx.fillText(Player.list[i].number,Player.list[i].x,Player.list[i].y);
     }
     for(var i in Bullet.list) {
-      ctx.fillText(Bullet.list[i].number,Bullet.list[i].x,Bullet.list[i].y);
+      ctx.fillText(Bullet.list[i].x-5,Bullet.list[i].y-5,10,10);
     }
   },40);
 

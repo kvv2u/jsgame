@@ -88,6 +88,13 @@ var Player = function(id) {
         }
     }
     Player.list[id] = self;
+
+    initPack.player.push({
+        id:self.id,
+        x:self.x,
+        y:self.y,
+        number:self.y,
+    });
     return  self;
 }
 Player.list = {};
@@ -111,6 +118,7 @@ Player.onConnect = function(socket) {
 }
 Player.onDisconnect = function(socket) {
     delete Player.list[socket.id];
+    removePack.player.push(socket.id);
 }
 Player.update = function() {
     var pack = [];
@@ -150,6 +158,11 @@ var Bullet = function(parent,angle) {
         }
     }
     Bullet.list[self.id] = self;
+    initPack.bullet.push({
+        id:self.id,
+        x:self.x,
+        y:self.y,
+    });
     return self;
 }
 Bullet.list = {};
@@ -161,6 +174,7 @@ Bullet.update = function() {
         bullet.update();
         if(bullet.toRemove) {
             delete Bullet.list[i];
+            removePack.bullet.push(bullet.id);
         } else {
             pack.push({
                 id:bullet.id,
@@ -171,8 +185,6 @@ Bullet.update = function() {
     }
     return pack;
 }
-var initPack = {player:[],bullet:[]};
-var removePack = {player:[],bullet:[]};
 
 var DEBUG = true;
 
@@ -253,6 +265,9 @@ io.sockets.on('connection', function(socket) {
     });
 });
 
+var initPack = {player:[],bullet:[]};
+var removePack = {player:[],bullet:[]};
+
 setInterval(function() {
     var pack = {
         player:Player.update(),
@@ -260,6 +275,13 @@ setInterval(function() {
     }
     for (var i in SOCKET_LIST){
         var socket = SOCKET_LIST[i];
+        socket.emit('init',initPack);
         socket.emit('update',pack); 
+        socket.emit('remove',removePack);
     }
+    initPack.player = [];
+    initPack.bullet = [];
+    removePack.player = [];
+    removePack.bullet = [];
+
 },1000/25);
