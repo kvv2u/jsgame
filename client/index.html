@@ -63,7 +63,7 @@
   });
 
   chatForm.onsubmit = function(e) {
-    e.preventDefault();             //チャット入力時にプレイヤーが動かないようになる
+    e.preventDefault();
     if(chatInput.value[0] === '/') {
       socket.emit('evalServer',chatInput.value.slice(1));
     } else {
@@ -82,7 +82,20 @@
     self.number = initPack.number;
     self.x = initPack.x;
     self.y = initPack.y;
+    self.hp = initPack.hp;
+    self.hpMax = initPack.hpMax;
+    self.score = initPack.score;
+
+    self.draw = function() {
+      var hpWidth = 30 * self.hp / self.hpMax;
+      ctx.fillRect(self.x - hpWidth/2,self.y - 40,hpWidth,4);
+      ctx.fillText(self.number,self.x,self.y);
+
+      ctx.fillText(self.score,self.x,self.y-60);
+    }
+
     Player.list[self.id] = self;
+
     return self;
   }
   Player.list = {};
@@ -92,7 +105,13 @@
     self.id = initPack.id;
     self.x = initPack.x;
     self.y = initPack.y;
+
+    self.draw = function() {
+      ctx.fillRect(self.x-5,self.y-5,10,10);
+    }
+
     Bullet.list[self.id] = self;
+
     return self;
   }
   Bullet.list = {};
@@ -117,7 +136,13 @@
           p.x = pack.x;
         }
         if(pack.y !== undefined) {
-          p.y = pack.x;
+          p.y = pack.y;
+        }
+        if(pack.hp !== undefined) {
+          p.hp = pack.hp;
+        }
+        if(pack.score !== undefined) {
+          p.score = pack.score;
         }
       }
     }
@@ -129,7 +154,7 @@
           b.x = pack.x;
         }
         if(pack.y !== undefined) {
-          b.y = pack.x;
+          b.y = pack.y;
         }
       }
     }
@@ -148,59 +173,35 @@
   setInterval(function() {
     ctx.clearRect(0,0,500,500);
     for(var i in Player.list) {
-      ctx.fillText(Player.list[i].number,Player.list[i].x,Player.list[i].y);
+      Player.list[i].draw();
     }
     for(var i in Bullet.list) {
-      ctx.fillRect(Bullet.list[i].x-5,Bullet.list[i].y-5,10,10);
+      Bullet.list[i].draw();
     }
   },40);
 
-  /*document.onkeydown = function(event) {
-    if(event.keyCode === 68) {          // d
-      socket.emit('keyPress', {inputId:'right', state:true});
-    } else if(event.keyCode === 83) {   // s
-      socket.emit('keyPress', {inputId:'down', state:true});
-    } else if(event.keyCode === 65) {   // a
-      socket.emit('keyPress', {inputId:'left', state:true});
-    } else if(event.keyCode === 87) {   // w
-      socket.emit('keyPress', {inputId:'up', state:true});
-    }
-  }
-  document.onkeyup = function(event) {
-    if(event.keyCode === 68) {          // d
-      socket.emit('keyPress', {inputId:'right', state:false});
-    } else if(event.keyCode === 83) {   // s
-      socket.emit('keyPress', {inputId:'down', state:false});
-    } else if(event.keyCode === 65) {   // a
-      socket.emit('keyPress', {inputId:'left', state:false});
-    } else if(event.keyCode === 87) {   // w
-      socket.emit('keyPress', {inputId:'up', state:false});
-    }
-  }*/
-
   document.onkeydown = function(event) {
-    if(event.keyCode === 39) {          // d
+    if(event.keyCode === 68) {          // d
       socket.emit('keyPress', {inputId:'right', state:true});
-    } else if(event.keyCode === 40) {   // s
+    } else if(event.keyCode === 83) {   // s
       socket.emit('keyPress', {inputId:'down', state:true});
-    } else if(event.keyCode === 37) {   // a
+    } else if(event.keyCode === 65) {   // a
       socket.emit('keyPress', {inputId:'left', state:true});
-    } else if(event.keyCode === 38) {   // w
+    } else if(event.keyCode === 87) {   // w
       socket.emit('keyPress', {inputId:'up', state:true});
     }
   }
   document.onkeyup = function(event) {
-    if(event.keyCode === 39) {          // d
+    if(event.keyCode === 68) {          // d
       socket.emit('keyPress', {inputId:'right', state:false});
-    } else if(event.keyCode === 40) {   // s
+    } else if(event.keyCode === 83) {   // s
       socket.emit('keyPress', {inputId:'down', state:false});
-    } else if(event.keyCode === 37) {   // a
+    } else if(event.keyCode === 65) {   // a
       socket.emit('keyPress', {inputId:'left', state:false});
-    } else if(event.keyCode === 38) {   // w
+    } else if(event.keyCode === 87) {   // w
       socket.emit('keyPress', {inputId:'up', state:false});
     }
   }
-
 
   document.onmousedown = function(event) {
     socket.emit('keyPress',{inputId:'attack', state:true});
@@ -214,18 +215,5 @@
     var angle = Math.atan2(y,x) / Math.PI * 180;
     socket.emit('keyPress',{inputId:'mouseAngle', state:angle})
   }
-
-  /*document.onkeydown = function(e) {
-    var keyCode = false;
-    if(e)
-      event = e;
-    if(event) {
-      keyCode = event.keyCode;
-    }
-    if(keyCode === 83) {
-      console.log("sは効いてる");
-    }
-  }*/
-
 
 </script>
