@@ -112,7 +112,7 @@ var Player = function(id) {
         };
     }
 
-    Player.list[self.id] = self;            // self ?
+    Player.list[id] = self;            // self ?
 
     initPack.player.push(self.getInitPack());
     return self;
@@ -137,6 +137,7 @@ Player.onConnect = function(socket) {
     });
 
     socket.emit('init',{
+        selfId:socket.id,
         player:Player.getAllInitPack(),
         bullet:Bullet.getAllInitPack(),
     })
