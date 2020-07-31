@@ -16,7 +16,7 @@ console.log("Server started.");
 
 var SOCKET_LIST = {};
 
-Entity({
+Entity = ({
     x:100,
     id:'asdasda',
 });
@@ -137,7 +137,7 @@ var Player = function(param) {
         };
     }
 
-    Player.list[id] = self;            // self ?
+    Player.list[self.id] = self;
 
     initPack.player.push(self.getInitPack());
     return self;
@@ -145,7 +145,7 @@ var Player = function(param) {
 Player.list = {};
 Player.onConnect = function(socket) {
     var map = 'forest';
-    if(Math.ramdom() < 0.5) {
+    if(Math.random() < 0.5) {
         map = 'field';
     }
     var player = Player({
