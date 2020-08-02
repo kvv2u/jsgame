@@ -64,6 +64,7 @@ var Entity = function(param) {
 var Player = function(param) {
     var self = Entity(param);
     self.number = "" + Math.floor(10 * Math.random());
+    self.username = param.username;
     self.pressingLeft = false;
     self.pressingRight = false;
     self.pressingUp = false;
@@ -137,6 +138,7 @@ var Player = function(param) {
             y:self.y,
             hp:self.hp,
             score:self.score,
+            map:self.map,
         };
     }
 
@@ -146,12 +148,13 @@ var Player = function(param) {
     return self;
 }
 Player.list = {};
-Player.onConnect = function(socket) {
+Player.onConnect = function(socket,username) {
     var map = 'forest';
     if(Math.random() < 0.5) {
         map = 'field';
     }
     var player = Player({
+        username:username,
         id:socket.id,
         map:map,
     });
@@ -170,6 +173,15 @@ Player.onConnect = function(socket) {
             player.mouseAngle = data.state;
         }
     });
+
+    socket.on('changeMap', function(data) {
+        if(player.map === 'field') {
+            player.map = 'forest';
+        } else {
+            player.map = 'field';
+        }
+    });
+
 
     socket.emit('init',{
         selfId:socket.id,
@@ -324,7 +336,7 @@ io.sockets.on('connection', function(socket) {
     socket.on('signIn', function(data) {
         isValidPassword(data,function(res){
             if(res) {
-                Player.onConnect(socket);
+                Player.onConnect(socket,data.username);
                 socket.emit('signInResponse',{success:true});
             } else {
                 socket.emit('signInResponse',{success:false});
