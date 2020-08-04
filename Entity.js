@@ -1,4 +1,3 @@
-
 var initPack = {player:[],bullet:[]};
 var removePack = {player:[],bullet:[]};
 
@@ -40,10 +39,25 @@ Entity = function(param) {
 }
 
 Entity.getFrameUpdateData = function() {
-    return {
-        initPack:initPack,
-        removePack:removePack,
-    }
+    var pack = {
+        initPack:{
+            player:initPack.player,
+            bullet:initPack.bullet,
+        },
+        removePack:{
+            player:removePack.player,
+            bullet:removePack.bullet,
+        },
+        updatePack:{
+            player:Player.update(),
+            bullet:Bullet.update(),
+        },
+    };
+    initPack.player = [];
+    initPack.bullet = [];
+    removePack.player = [];
+    removePack.bullet = [];
+    return pack;
 }
 
 Player = function(param) {
@@ -60,6 +74,7 @@ Player = function(param) {
     self.hp = 10;
     self.hpMax = 10;
     self.score = 0;
+    self.inventory = new Inventory(param.socket);
 
     var super_update = self.update;
     self.update = function() {
@@ -142,6 +157,7 @@ Player.onConnect = function(socket,username) {
         username:username,
         id:socket.id,
         map:map,
+        socket:socket,
     });
     socket.on('keyPress', function(data) {
         if(data.inputId === 'left') {

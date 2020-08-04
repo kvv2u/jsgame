@@ -2,6 +2,7 @@
 var db = null; // mongojs('localhost:27017/myGame', ['account','progress']);     // db に接続
 
 require('./Entity');
+require('./client/Inventory');
 
 var express =require('express');
 const { Socket } = require('dgram');
@@ -15,7 +16,6 @@ app.get('/', function(req, res) {
     res.sendFile(__dirname + '/client/index.html');
 });
 app.use('/client', express.static(__dirname+'/client'));
-
 serv.listen(process.env.PORT || 2000);
 console.log("Server started.");
 
@@ -105,23 +105,15 @@ io.sockets.on('connection', function(socket) {
 
 setInterval(function() {
     var packs = Entity.getFrameUpdateData();
-    var pack = {
-        player:Player.update(),
-        bullet:Bullet.update(),
-    }
     for(var i in SOCKET_LIST){
         var socket = SOCKET_LIST[i];
         socket.emit('init',packs.initPack);
-        socket.emit('update',packs.pack); 
+        socket.emit('update',packs.updatePack); 
         socket.emit('remove',packs.removePack);
     }
-    packs.initPack.player = [];
-    packs.initPack.bullet = [];
-    packs.removePack.player = [];
-    packs.removePack.bullet = [];
-
 },1000/25);
 
+/*
 var startProfiling = function(duration) {
     profiler.startProfiling('1', true);
     setTimeout(function() {
@@ -137,3 +129,4 @@ var startProfiling = function(duration) {
     },duration);
 }
 startProfiling(10000);
+*/
