@@ -21,19 +21,7 @@ console.log("Server started.");
 
 var SOCKET_LIST = {};
 
-Entity = ({
-    x:100,
-    id:'asdasda',
-});
-
 var DEBUG = true;
-
-var USERS = {
-    // username:password
-    "bob":"asd",
-    "bob2":"bob",
-    "bob3":"ttt",
-}
 
 var isValidPassword = function(data,cb) {
     return cb(true);
