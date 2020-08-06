@@ -74,7 +74,7 @@ Player = function(param) {
     self.hp = 10;
     self.hpMax = 10;
     self.score = 0;
-    self.inventory = new Inventory(param.socket);
+    self.inventory = new Inventory(param.socket,true);
 
     var super_update = self.update;
     self.update = function() {
@@ -93,6 +93,9 @@ Player = function(param) {
         */
     }
     self.shootBullet = function(angle) {
+        if(Math.random() < 0.1) {
+            self.inventory.addItem("potion",1);
+        }
         Bullet({
             parent:self.id,
             angle:angle,
