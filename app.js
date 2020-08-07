@@ -30,12 +30,13 @@ io.sockets.on('connection', function(socket) {
 
     socket.on('signIn', function(data) {
         Database.isValidPassword(data,function(res){
-            if(res) {
-                Player.onConnect(socket,data.username);
-                socket.emit('signInResponse',{success:true});
-            } else {
-                socket.emit('signInResponse',{success:false});
+            if(!res) {
+                return socket.emit('signInResponse',{success:false});
             }
+            Database.getPlayerProgress(data.username,function(progress) {
+                Player.onConnect(socket,data.username,progress);
+                socket.emit('signInResponse',{success:true});
+            });
         });
     });
     socket.on('signUp', function(data) {
