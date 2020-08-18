@@ -35,9 +35,7 @@ Database.addUser = function(data,cb) {
         return cb();
     }
     db.account.insert({username:data.username,password:data.password},function(err) {
-        console.log('create user %s', data.username);
         Database.savePlayerProgress({username:data.username,items:[]},function() {
-            console.log("create user111");
             cb();
         });
     });
@@ -47,6 +45,7 @@ Database.getPlayerProgress = function(username,cb) {
         return cb({items:[]});
     }
     db.progress.findOne({username:username},function(err,res) {
+        if (err) throw err;
         cb({items:res.items});
     });
 }
@@ -55,6 +54,5 @@ Database.savePlayerProgress = function(data,cb) {
     if(!USE_DB) {
         return cb();
     }
-    db.progress.update({username:data.username},data, true, cb);
-    console.log('save create user %s', data.username);
+    db.progress.updateOne({username:data.username},{$set:data},{upsert:true},cb);
 }
