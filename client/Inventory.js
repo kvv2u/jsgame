@@ -41,11 +41,11 @@ Inventory = function(items,socket,server){
 			return;
 		}
 		// client only
-		var inventory = document.getElementById("inventory")
+		var inventory = document.getElementById("inventory");
 		inventory.innerHTML = "";
 		var addButton = function(data) {
 			let item = Item.list[data.id];
-			let button = document.createElement('button');
+			let button = document.createElement("button");
 			button.onclick = function() {
 				self.socket.emit('useItem',item.id);
 			}
