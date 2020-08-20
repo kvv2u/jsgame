@@ -107,7 +107,13 @@
   // game
   var Img = {};
   Img.player = new Image();
-  Img.player.src = '/client/img/player.png';
+  var human = '/client/img/player.png'
+  var monster = '/client/img/balor.png';
+  if(Math.random() < 0.75) {
+    Img.player.src = human;
+  } else {
+    Img.player.src = monster;
+  }
   Img.bullet = new Image();
   Img.bullet.src = '/client/img/bullet.png';
 
