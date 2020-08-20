@@ -11,6 +11,7 @@ Database.isValidPassword = function(data,cb) {
         return cb(true);
     }
     db.account.findOne({username:data.username,password:data.password},function(err,res) {
+        if (err) throw err;
         if(res) {
             cb(true);
         } else {
@@ -23,6 +24,7 @@ Database.isUsernameTaken = function(data,cb) {
         return cb(false);
     }
     db.account.findOne({username:data.username},function(err,res) {
+        if (err) throw err;
         if(res) {
             cb(true);
         } else {
@@ -35,6 +37,7 @@ Database.addUser = function(data,cb) {
         return cb();
     }
     db.account.insert({username:data.username,password:data.password},function(err) {
+        if (err) throw err;
         Database.savePlayerProgress({username:data.username,items:[]},function() {
             cb();
         });

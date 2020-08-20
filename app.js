@@ -19,8 +19,8 @@ console.log("Server started.");
 
 var SOCKET_LIST = {};
 
-var DEBUG = true;
 
+var DEBUG = true;
 
 
 var io = require('socket.io')(serv,{});
